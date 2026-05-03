@@ -21,7 +21,7 @@ interface Props {
 
 export function MealForm({ meal, existingIngredients = [], categories, onSave, onCancel }: Props) {
   const [name, setName] = useState(meal?.name ?? '')
-  const [description, setDescription] = useState(meal?.description ?? '')
+  const description = meal?.description ?? ''
   const [mealCategory, setMealCategory] = useState(meal?.category ?? '')
   const [drafts, setDrafts] = useState<IngredientDraft[]>(
     existingIngredients.length > 0
