@@ -1,6 +1,6 @@
 services:
   middagsplanlegger:
-    image: ghcr.io/DITT_GITHUB_BRUKERNAVN/middagsplanlegger:latest
+    image: ghcr.io/janfredrik/middagsplanlegger:latest
     container_name: middagsplanlegger
     restart: unless-stopped
     ports:
