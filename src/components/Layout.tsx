@@ -19,6 +19,16 @@ function ShoppingIcon() {
   )
 }
 
+function CartIcon({ className = 'w-6 h-6' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 6h1.5l2.5 11h11l3-8H6.5" />
+      <circle cx="9" cy="20" r="1.2" fill="currentColor" stroke="none"/>
+      <circle cx="17" cy="20" r="1.2" fill="currentColor" stroke="none"/>
+    </svg>
+  )
+}
+
 function MealsIcon() {
   return (
     <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -66,8 +76,8 @@ export function Layout({ tab, onTabChange, children }: LayoutProps) {
     <div className="min-h-screen flex flex-col bg-surface">
       <header className="sticky top-0 z-10 bg-card/80 backdrop-blur-md border-b border-black/[0.06] px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 bg-accent rounded-lg flex items-center justify-center shadow-xs">
-            <MealsIcon />
+          <div className="w-7 h-7 bg-accent rounded-lg flex items-center justify-center shadow-xs text-white">
+            <CartIcon className="w-5 h-5" />
           </div>
           <span className="text-base font-semibold text-text1 tracking-tight">Middagsplanlegger</span>
         </div>

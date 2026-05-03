@@ -57,11 +57,6 @@ export function MealForm({ meal, existingIngredients = [], categories, onSave, o
         placeholder="Middagsnavn..." required
         className={`w-full ${inputClass}`}
       />
-      <input
-        value={description} onChange={(e) => setDescription(e.target.value)}
-        placeholder="Kort beskrivelse (valgfri)"
-        className={`w-full ${inputClass}`}
-      />
       <select
         value={mealCategory}
         onChange={(e) => setMealCategory(e.target.value)}
