@@ -1,0 +1,9 @@
+services:
+  middagsplanlegger:
+    image: ghcr.io/DITT_GITHUB_BRUKERNAVN/middagsplanlegger:latest
+    container_name: middagsplanlegger
+    restart: unless-stopped
+    ports:
+      - "3200:8090"
+    volumes:
+      - /sti/til/data:/pb/pb_data

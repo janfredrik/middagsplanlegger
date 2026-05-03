@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap')
+layer(base);
+
+@import 'tailwindcss';
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme {
+  --font-family-sans: 'Figtree', system-ui, sans-serif;
+
+  --color-accent:        #10b981;
+  --color-accent-soft:   #d1fae5;
+  --color-accent-shadow: rgba(16,185,129,0.28);
+
+  --color-surface:  #f7f8fa;
+  --color-card:     #ffffff;
+  --color-surface2: #f0f1f5;
+
+  --color-text1: #111318;
+  --color-text2: #444854;
+  --color-text3: #9098aa;
+
+  --radius-card:    20px;
+  --radius-card-sm: 14px;
+
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.05);
+
+  /* indigo → accent aliases so existing indigo-* classes auto-use accent */
+  --color-indigo-400: var(--color-accent);
+  --color-indigo-500: var(--color-accent);
+  --color-indigo-600: var(--color-accent);
+}
+
+/* Unlayered — beats @layer theme so the dark overrides actually win */
+[data-theme="dark"] {
+  --color-surface:  #111318;
+  --color-card:     #1c1f28;
+  --color-surface2: #252932;
+  --color-text1:    #f0f2f7;
+  --color-text2:    #9098aa;
+  --color-text3:    #545d70;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility nav-safe-pb {
+  padding-bottom: max(0.875rem, env(safe-area-inset-bottom));
+}
+
+@utility main-safe-pb {
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+}
+
+@layer base {
+  body {
+    font-family: 'Figtree', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
