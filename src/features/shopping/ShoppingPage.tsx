@@ -22,13 +22,6 @@ export function ShoppingPage() {
   const contextItem = contextItemId ? (items.find((i) => i.id === contextItemId) ?? null) : null
   const checkedCount = items.filter((i) => i.checked).length
 
-  function handleToggleTag(tagKey: string) {
-    if (!contextItem) return
-    const tags = contextItem.tags ?? []
-    const newTags = tags.includes(tagKey) ? tags.filter((t) => t !== tagKey) : [...tags, tagKey]
-    updateItem(contextItem.id, { tags: newTags })
-  }
-
   function handleChangeCategory(categoryId: string) {
     if (!contextItem) return
     updateItem(contextItem.id, { category: categoryId })
@@ -104,7 +97,6 @@ export function ShoppingPage() {
           categories={categories}
           onClose={() => setContextItemId(null)}
           onChangeCategory={handleChangeCategory}
-          onToggleTag={handleToggleTag}
         />
       )}
     </div>

@@ -1,18 +1,15 @@
 import { useEffect, useState } from 'react'
 import type { ShoppingCategory, ShoppingItem } from '../../types'
-import { SHOPPING_TAGS } from './tags'
 
 interface Props {
   item: ShoppingItem
   categories: ShoppingCategory[]
   onClose: () => void
   onChangeCategory: (categoryId: string) => void
-  onToggleTag: (tagKey: string) => void
 }
 
-export function ItemContextMenu({ item, categories, onClose, onChangeCategory, onToggleTag }: Props) {
+export function ItemContextMenu({ item, categories, onClose, onChangeCategory }: Props) {
   const [visible, setVisible] = useState(false)
-  const tags = item.tags ?? []
 
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 10)

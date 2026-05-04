@@ -2,7 +2,6 @@ import { useState, useRef } from 'react'
 import { useUser } from '../../context/UserContext'
 import { guessCategory, getSuggestions, learnItem } from '../../lib/categorize'
 import type { ShoppingCategory } from '../../types'
-import { SHOPPING_TAGS } from './tags'
 
 interface Props {
   categories: ShoppingCategory[]
@@ -41,10 +40,6 @@ export function AddItemForm({ categories, onAdd }: Props) {
     setShowSuggestions(false)
     setActiveSuggestion(-1)
     inputRef.current?.focus()
-  }
-
-  function toggleTag(key: string) {
-    setTags((prev) => prev.includes(key) ? prev.filter((t) => t !== key) : [...prev, key])
   }
 
   function handleAdd() {
