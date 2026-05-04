@@ -50,7 +50,7 @@ export function ItemContextMenu({ item, categories, onClose, onChangeCategory, o
           ))}
         </div>
 
-        <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Tags</p>
+        {/* <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Tags</p>
         <div className="flex gap-2">
           {SHOPPING_TAGS.map((tag) => {
             const active = tags.includes(tag.key)
@@ -69,7 +69,7 @@ export function ItemContextMenu({ item, categories, onClose, onChangeCategory, o
               </button>
             )
           })}
-        </div>
+        </div> */}
       </div>
     </div>
   )

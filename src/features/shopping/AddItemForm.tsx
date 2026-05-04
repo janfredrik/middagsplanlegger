@@ -112,7 +112,6 @@ export function AddItemForm({ categories, onAdd }: Props) {
                       : 'text-slate-700 dark:text-slate-200 active:bg-slate-100 dark:active:bg-slate-600'
                   }`}
                 >
-                  <span className="text-base flex-shrink-0">{s.category.emoji}</span>
                   <span className="capitalize">{s.word}</span>
                 </button>
               </li>
@@ -148,7 +147,7 @@ export function AddItemForm({ categories, onAdd }: Props) {
           +
         </button>
       </div>
-      <div className="flex gap-2">
+      {/* <div className="flex gap-2">
         {SHOPPING_TAGS.map((tag) => {
           const active = tags.includes(tag.key)
           return (
@@ -167,7 +166,7 @@ export function AddItemForm({ categories, onAdd }: Props) {
             </button>
           )
         })}
-      </div>
+      </div> */}
     </div>
   )
 }
