@@ -216,6 +216,53 @@ const WORD_MAP: Record<string, string> = {
   dopapir: 'renhold', vindusspray: 'renhold', zalo: 'renhold',
 }
 
+const CUSTOM_ITEMS_KEY = 'middagsplanlegger_custom_items'
+
+function getCustomItems(): Record<string, string> {
+  try {
+    return JSON.parse(localStorage.getItem(CUSTOM_ITEMS_KEY) || '{}')
+  } catch {
+    return {}
+  }
+}
+
+export function learnItem(normalizedName: string, categoryName: string): void {
+  if (!normalizedName || WORD_MAP[normalizedName]) return
+  try {
+    const custom = getCustomItems()
+    custom[normalizedName] = categoryName.toLowerCase()
+    localStorage.setItem(CUSTOM_ITEMS_KEY, JSON.stringify(custom))
+  } catch {
+    // localStorage not available
+  }
+}
+
+export function getSuggestions(
+  prefix: string,
+  categories: ShoppingCategory[]
+): Array<{ word: string; category: ShoppingCategory }> {
+  const norm = prefix.toLowerCase().trim()
+  if (norm.length < 2) return []
+
+  const combined = { ...WORD_MAP, ...getCustomItems() }
+  const results: Array<{ word: string; category: ShoppingCategory }> = []
+
+  for (const [key, catName] of Object.entries(combined)) {
+    if (!key.startsWith(norm)) continue
+    const cat = categories.find((c) => c.name.toLowerCase() === catName)
+    if (cat) results.push({ word: key, category: cat })
+    if (results.length >= 8) break
+  }
+
+  results.sort((a, b) => {
+    if (a.word === norm) return -1
+    if (b.word === norm) return 1
+    return a.word.localeCompare(b.word)
+  })
+
+  return results.slice(0, 8)
+}
+
 export function guessCategory(
   itemName: string,
   categories: ShoppingCategory[]
@@ -224,9 +271,20 @@ export function guessCategory(
   const key = Object.keys(WORD_MAP).find(
     (k) => normalized === k || normalized.startsWith(k + ' ')
   )
-  if (!key) return null
-  const catName = WORD_MAP[key]
-  const match = categories.find((c) => c.name.toLowerCase() === catName) ?? null
-  if (!match) console.warn(`[categorize] ingen kategori for "${catName}". Tilgjengelige: ${categories.map(c => c.name).join(' | ')}`)
-  return match
+  if (key) {
+    const catName = WORD_MAP[key]
+    const match = categories.find((c) => c.name.toLowerCase() === catName) ?? null
+    if (!match) console.warn(`[categorize] ingen kategori for "${catName}". Tilgjengelige: ${categories.map(c => c.name).join(' | ')}`)
+    return match
+  }
+
+  const customKey = Object.keys(getCustomItems()).find(
+    (k) => normalized === k || normalized.startsWith(k + ' ')
+  )
+  if (customKey) {
+    const catName = getCustomItems()[customKey]
+    return categories.find((c) => c.name.toLowerCase() === catName) ?? null
+  }
+
+  return null
 }
