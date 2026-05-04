@@ -85,7 +85,7 @@ export function ShoppingPage() {
         >
           <div className="absolute inset-0 bg-black/40" />
           <div
-            className={`relative w-full bg-white dark:bg-slate-800 rounded-t-3xl px-5 pt-4 pb-10 shadow-2xl transition-transform duration-300 ${addFormVisible ? 'translate-y-0' : 'translate-y-full'}`}
+            className={`relative overflow-visible w-full bg-white dark:bg-slate-800 rounded-t-3xl px-5 pt-4 pb-10 shadow-2xl transition-transform duration-300 ${addFormVisible ? 'translate-y-0' : 'translate-y-full'}`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="w-10 h-1 bg-slate-200 dark:bg-slate-600 rounded-full mx-auto mb-4" />

@@ -92,7 +92,7 @@ export function AddItemForm({ categories, onAdd }: Props) {
               }
             }
           }}
-          onBlur={() => setTimeout(() => { setShowSuggestions(false); setActiveSuggestion(-1) }, 150)}
+          onBlur={() => setTimeout(() => { setShowSuggestions(false); setActiveSuggestion(-1) }, 300)}
           onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true) }}
           placeholder="Legg til vare..."
           enterKeyHint="done"
@@ -100,7 +100,7 @@ export function AddItemForm({ categories, onAdd }: Props) {
           className={`w-full font-medium ${inputClass}`}
         />
         {showSuggestions && suggestions.length > 0 && (
-          <ul className="absolute left-0 right-0 top-full mt-1 z-[60] bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl shadow-lg overflow-hidden">
+          <ul style={{ zIndex: 100 }} className="absolute left-0 right-0 top-full mt-1 max-h-52 overflow-y-auto bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl shadow-lg">
             {suggestions.map((s, i) => (
               <li key={s.word}>
                 <button
