@@ -4,3 +4,5 @@ pb_data/
 *.local
 .DS_Store
 .env.development
+tsconfig.tsbuildinfo
+vite.config.d.ts
