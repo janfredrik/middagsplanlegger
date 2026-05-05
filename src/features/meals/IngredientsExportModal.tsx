@@ -48,12 +48,20 @@ export function IngredientsExportModal({ meal, date, ingredients, shoppingItems,
   const allSelected = ingredients.length > 0 && selected.size === ingredients.length
   const noneSelected = selected.size === 0
 
+  const [error, setError] = useState('')
+
   async function handleAdd() {
     const toAdd = ingredients.filter((i) => selected.has(i.id))
     if (toAdd.length === 0) return
     setLoading(true)
-    await onAdd(toAdd)
-    onClose()
+    setError('')
+    try {
+      await onAdd(toAdd)
+      onClose()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Noe gikk galt')
+      setLoading(false)
+    }
   }
 
   if (ingredients.length === 0) {
@@ -138,6 +146,7 @@ export function IngredientsExportModal({ meal, date, ingredients, shoppingItems,
         </div>
 
         <div className="px-4 pt-3 pb-5 flex flex-col gap-2 shrink-0 border-t border-slate-100 dark:border-slate-800">
+          {error && <p className="text-xs text-red-500 dark:text-red-400 font-medium text-center">{error}</p>}
           <button
             onClick={handleAdd}
             disabled={noneSelected || loading}

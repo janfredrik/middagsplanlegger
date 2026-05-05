@@ -109,18 +109,16 @@ export function useMeals(currentUserId: string, weekOffset: number) {
   }
 
   async function addIngredientsToShoppingList(ings: MealIngredient[]) {
-    await Promise.all(
-      ings.map((ing) => {
-        const data: Record<string, unknown> = {
-          name: ing.name,
-          quantity: ing.quantity ?? '',
-          checked: false,
-          added_by: currentUserId,
-        }
-        if (ing.category) data.category = ing.category
-        return pb.collection('shopping_items').create(data, { requestKey: ing.id })
-      })
-    )
+    for (const ing of ings) {
+      const data: Record<string, unknown> = {
+        name: ing.name,
+        quantity: ing.quantity ?? '',
+        checked: false,
+      }
+      if (currentUserId) data.added_by = currentUserId
+      if (ing.category) data.category = ing.category
+      await pb.collection('shopping_items').create(data, { requestKey: null })
+    }
   }
 
   async function exportToShoppingList(dates: string[]) {
