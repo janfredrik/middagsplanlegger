@@ -63,8 +63,10 @@ export function useMeals(currentUserId: string, weekOffset: number) {
       .then(setMealPlan)
   }, [weekOffset])
 
-  async function createMeal(name: string, description: string, category: string): Promise<Meal> {
-    return pb.collection('meals').create<Meal>({ name, description, category })
+  async function createMeal(name: string, description: string, category: string, sourceUrl?: string): Promise<Meal> {
+    const data: Record<string, string> = { name, description, category }
+    if (sourceUrl) data.source_url = sourceUrl
+    return pb.collection('meals').create<Meal>(data)
   }
 
   async function updateMeal(id: string, name: string, description: string, category: string) {

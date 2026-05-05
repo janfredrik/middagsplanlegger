@@ -32,8 +32,8 @@ export function MealsPage() {
     ? ingredients.filter(i => i.meal === exportMeal.id)
     : []
 
-  async function handleCreateMeal(name: string, desc: string, category: string, ings: SaveIngredient[]) {
-    const meal = await createMeal(name, desc, category)
+  async function handleCreateMeal(name: string, desc: string, category: string, ings: SaveIngredient[], sourceUrl?: string) {
+    const meal = await createMeal(name, desc, category, sourceUrl)
     if (ings.length > 0) await saveIngredients(meal.id, ings)
   }
 

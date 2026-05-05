@@ -121,7 +121,8 @@ create_collection "meals" '{
   "fields": [
     {"name": "name",        "type": "text", "required": true},
     {"name": "description", "type": "text", "required": false},
-    {"name": "category",    "type": "text", "required": false}
+    {"name": "category",    "type": "text", "required": false},
+    {"name": "source_url",  "type": "url",  "required": false}
   ]
 }'
 

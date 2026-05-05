@@ -35,6 +35,7 @@ export interface Meal extends BaseRecord {
   name: string
   description: string
   category: string
+  source_url?: string
 }
 
 export interface MealIngredient extends BaseRecord {

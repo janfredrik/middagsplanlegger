@@ -47,6 +47,17 @@ export function MealCard({ meal, ingredients, onEdit, onDelete, onTap }: Props) 
             {ingredients.length > 0 && (
               <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">{ingredients.length} ingredienser</span>
             )}
+            {meal.source_url && (
+              <a
+                href={meal.source_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="text-[10px] text-indigo-400 dark:text-indigo-500 font-medium underline-offset-2 hover:underline active:opacity-70"
+              >
+                Se på Matprat
+              </a>
+            )}
           </div>
         </div>
         <div className="flex gap-1 shrink-0 items-center">

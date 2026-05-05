@@ -1,14 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { MealCard } from './MealCard'
 import { MealForm } from './MealForm'
+import { fetchMatpratRecipe } from '../../lib/matprat'
 import type { Meal, MealIngredient, ShoppingCategory } from '../../types'
 import type { SaveIngredient } from './useMeals'
+
+interface ImportedData {
+  name: string
+  category: string
+  ingredients: Array<{ name: string; quantity: string }>
+  sourceUrl: string
+}
 
 interface Props {
   meals: Meal[]
   ingredients: MealIngredient[]
   categories: ShoppingCategory[]
-  onCreateMeal: (name: string, desc: string, category: string, ings: SaveIngredient[]) => void
+  onCreateMeal: (name: string, desc: string, category: string, ings: SaveIngredient[], sourceUrl?: string) => void
   onUpdateMeal: (id: string, name: string, desc: string, category: string, ings: SaveIngredient[]) => void
   onDeleteMeal: (id: string) => void
   onSelectMeal: (mealId: string) => void
@@ -20,6 +28,14 @@ export function MealLibrary({ meals, ingredients, categories, onCreateMeal, onUp
   const [editingMeal, setEditingMeal] = useState<Meal | null>(null)
   const [editVisible, setEditVisible] = useState(false)
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null)
+
+  const [showImport, setShowImport] = useState(false)
+  const [importVisible, setImportVisible] = useState(false)
+  const [importUrl, setImportUrl] = useState('')
+  const [importLoading, setImportLoading] = useState(false)
+  const [importError, setImportError] = useState('')
+  const [importedData, setImportedData] = useState<ImportedData | null>(null)
+  const importInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (showForm) {
@@ -39,6 +55,18 @@ export function MealLibrary({ meals, ingredients, categories, onCreateMeal, onUp
     }
   }, [editingMeal])
 
+  useEffect(() => {
+    if (showImport) {
+      const t = setTimeout(() => {
+        setImportVisible(true)
+        importInputRef.current?.focus()
+      }, 10)
+      return () => clearTimeout(t)
+    } else {
+      setImportVisible(false)
+    }
+  }, [showImport])
+
   function openCreate() { setShowForm(true) }
 
   function closeCreate() {
@@ -51,6 +79,30 @@ export function MealLibrary({ meals, ingredients, categories, onCreateMeal, onUp
     setTimeout(() => setEditingMeal(null), 200)
   }
 
+  function openImport() { setShowImport(true); setImportError('') }
+
+  function closeImport() {
+    setImportVisible(false)
+    setTimeout(() => { setShowImport(false); setImportUrl('') }, 200)
+  }
+
+  async function handleImport(e: React.FormEvent) {
+    e.preventDefault()
+    if (!importUrl.trim()) return
+    setImportLoading(true)
+    setImportError('')
+    try {
+      const data = await fetchMatpratRecipe(importUrl.trim())
+      setImportedData(data)
+      closeImport()
+      setTimeout(() => openCreate(), 220)
+    } catch (err) {
+      setImportError(err instanceof Error ? err.message : 'Noe gikk galt')
+    } finally {
+      setImportLoading(false)
+    }
+  }
+
   const usedCategories = [...new Set(meals.map((m) => m.category).filter(Boolean))]
   const filteredMeals = categoryFilter ? meals.filter((m) => m.category === categoryFilter) : meals
 
@@ -58,6 +110,12 @@ export function MealLibrary({ meals, ingredients, categories, onCreateMeal, onUp
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
         <h3 className="text-[11px] font-bold uppercase tracking-[0.09em] text-text3">Middagsbibliotek</h3>
+        <button
+          onClick={openImport}
+          className="text-xs text-indigo-500 dark:text-indigo-400 font-semibold active:opacity-60 transition-opacity"
+        >
+          Importer fra Matprat
+        </button>
       </div>
 
       {usedCategories.length > 0 && (
@@ -118,6 +176,56 @@ export function MealLibrary({ meals, ingredients, categories, onCreateMeal, onUp
         +
       </button>
 
+      {/* Importer fra Matprat — bunn-sheet */}
+      {showImport && (
+        <div
+          className={`fixed inset-0 z-50 flex items-end transition-opacity duration-200 ${importVisible ? 'opacity-100' : 'opacity-0'}`}
+          onClick={closeImport}
+        >
+          <div className="absolute inset-0 bg-black/40" />
+          <div
+            className={`relative w-full bg-white dark:bg-slate-800 rounded-t-3xl shadow-2xl transition-transform duration-300 ${importVisible ? 'translate-y-0' : 'translate-y-full'}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-10 h-1 bg-slate-200 dark:bg-slate-600 rounded-full mx-auto mt-3 mb-1" />
+            <div className="px-5 pt-3 pb-10">
+              <p className="font-semibold text-slate-800 dark:text-slate-100 mb-1 text-base">Importer fra Matprat</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 mb-4">Lim inn lenken til en oppskrift på matprat.no</p>
+              <form onSubmit={handleImport} className="flex flex-col gap-3">
+                <input
+                  ref={importInputRef}
+                  type="url"
+                  value={importUrl}
+                  onChange={(e) => setImportUrl(e.target.value)}
+                  placeholder="https://www.matprat.no/oppskrifter/..."
+                  required
+                  className="w-full text-sm border border-slate-200 dark:border-slate-600 rounded-xl px-3.5 py-2.5 focus:outline-hidden focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-shadow bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                />
+                {importError && (
+                  <p className="text-xs text-red-500 dark:text-red-400 font-medium">{importError}</p>
+                )}
+                <div className="flex gap-2 justify-end">
+                  <button
+                    type="button"
+                    onClick={closeImport}
+                    className="text-sm text-slate-500 dark:text-slate-400 font-medium px-4 py-2 rounded-xl active:bg-slate-50 dark:active:bg-slate-700 transition-colors"
+                  >
+                    Avbryt
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={importLoading}
+                    className="text-sm bg-indigo-600 text-white rounded-xl px-5 py-2 font-semibold shadow-xs active:bg-indigo-700 transition-colors disabled:opacity-50"
+                  >
+                    {importLoading ? 'Henter…' : 'Hent oppskrift'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Ny middag — bunn-sheet */}
       {showForm && (
         <div
@@ -134,8 +242,13 @@ export function MealLibrary({ meals, ingredients, categories, onCreateMeal, onUp
               <p className="font-semibold text-slate-800 dark:text-slate-100 mb-4 text-base">Ny middag</p>
               <MealForm
                 categories={categories}
-                onSave={(name, desc, category, ings) => { onCreateMeal(name, desc, category, ings); closeCreate() }}
-                onCancel={closeCreate}
+                initialData={importedData ?? undefined}
+                onSave={(name, desc, category, ings) => {
+                  onCreateMeal(name, desc, category, ings, importedData?.sourceUrl)
+                  closeCreate()
+                  setImportedData(null)
+                }}
+                onCancel={() => { closeCreate(); setImportedData(null) }}
               />
             </div>
           </div>

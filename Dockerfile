@@ -15,6 +15,7 @@ RUN apk add --no-cache unzip wget \
     && rm pocketbase.zip \
     && apk del unzip wget
 COPY --from=builder /app/dist ./pb_public
+COPY pb_hooks ./pb_hooks
 VOLUME /pb/pb_data
 EXPOSE 8090
 CMD ["./pocketbase", "serve", "--http=0.0.0.0:8090"]

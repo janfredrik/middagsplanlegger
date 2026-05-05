@@ -11,21 +11,35 @@ type IngredientDraft = {
   category: string
 }
 
+interface InitialData {
+  name: string
+  category: string
+  ingredients: Array<{ name: string; quantity: string }>
+}
+
 interface Props {
   meal?: Meal
   existingIngredients?: MealIngredient[]
   categories: ShoppingCategory[]
+  initialData?: InitialData
   onSave: (name: string, description: string, category: string, ingredients: SaveIngredient[]) => void
   onCancel: () => void
 }
 
-export function MealForm({ meal, existingIngredients = [], categories, onSave, onCancel }: Props) {
-  const [name, setName] = useState(meal?.name ?? '')
+export function MealForm({ meal, existingIngredients = [], categories, initialData, onSave, onCancel }: Props) {
+  const [name, setName] = useState(meal?.name ?? initialData?.name ?? '')
   const description = meal?.description ?? ''
-  const [mealCategory, setMealCategory] = useState(meal?.category ?? '')
+  const [mealCategory, setMealCategory] = useState(meal?.category ?? initialData?.category ?? '')
   const [drafts, setDrafts] = useState<IngredientDraft[]>(
     existingIngredients.length > 0
       ? existingIngredients.map((i) => ({ uid: crypto.randomUUID(), name: i.name, quantity: i.quantity, category: i.category }))
+      : initialData && initialData.ingredients.length > 0
+      ? initialData.ingredients.map((i) => ({
+          uid: crypto.randomUUID(),
+          name: i.name,
+          quantity: i.quantity,
+          category: guessCategory(i.name, categories)?.id ?? '',
+        }))
       : [{ uid: crypto.randomUUID(), name: '', quantity: '', category: '' }]
   )
 
