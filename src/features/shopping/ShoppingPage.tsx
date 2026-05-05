@@ -21,6 +21,8 @@ export function ShoppingPage() {
 
   const contextItem = contextItemId ? (items.find((i) => i.id === contextItemId) ?? null) : null
   const checkedCount = items.filter((i) => i.checked).length
+  const categoryIds = new Set(categories.map((c) => c.id))
+  const uncategorized = items.filter((i) => !i.category || !categoryIds.has(i.category))
 
   function handleChangeCategory(categoryId: string) {
     if (!contextItem) return
@@ -55,6 +57,16 @@ export function ShoppingPage() {
           onLongPress={(item) => setContextItemId(item.id)}
         />
       ))}
+      {uncategorized.length > 0 && (
+        <CategoryGroup
+          key="uncategorized"
+          category={{ id: '', name: 'Annet', emoji: '🛒', sort_order: 99, collectionId: '', collectionName: '', created: '', updated: '' }}
+          items={uncategorized}
+          onToggle={toggleItem}
+          onDelete={deleteItem}
+          onLongPress={(item) => setContextItemId(item.id)}
+        />
+      )}
       {items.length === 0 && (
         <div className="flex flex-col items-center gap-2 py-16 text-slate-300 dark:text-slate-600">
           <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
