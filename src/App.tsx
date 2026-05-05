@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { UserProvider, useUser } from './context/UserContext'
 import { AccentProvider } from './context/AccentContext'
+import { ShoppingProvider } from './context/ShoppingContext'
 import { UserPicker } from './components/UserPicker'
 import { Layout, type Tab } from './components/Layout'
 import { ShoppingPage } from './features/shopping/ShoppingPage'
@@ -20,10 +21,12 @@ function Inner() {
   if (!currentUser) return <UserPicker />
 
   return (
-    <Layout tab={tab} onTabChange={handleTabChange}>
-      {tab === 'shopping' && <ShoppingPage />}
-      {tab === 'meals'    && <MealsPage />}
-    </Layout>
+    <ShoppingProvider>
+      <Layout tab={tab} onTabChange={handleTabChange}>
+        {tab === 'shopping' && <ShoppingPage />}
+        {tab === 'meals'    && <MealsPage />}
+      </Layout>
+    </ShoppingProvider>
   )
 }
 

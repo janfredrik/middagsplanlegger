@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useUser } from '../../context/UserContext'
 import { useMeals, getWeekDates } from './useMeals'
 import type { SaveIngredient } from './useMeals'
-import { useShopping } from '../shopping/useShopping'
+import { useShoppingContext } from '../../context/ShoppingContext'
 import { MealLibrary } from './MealLibrary'
 import { WeekView } from './WeekView'
 import { DayPickerModal } from './DayPickerModal'
@@ -19,7 +19,7 @@ export function MealsPage() {
     assignMealToDay, removeMealFromDay, /*exportToShoppingList,*/ addIngredientsToShoppingList,
   } = useMeals(currentUser?.id ?? '', weekOffset)
 
-  const { items: shoppingItems } = useShopping()
+  const { items: shoppingItems } = useShoppingContext()
 
   const [selectedMealId, setSelectedMealId] = useState<string | null>(null)
   const selectedMeal = meals.find(m => m.id === selectedMealId)

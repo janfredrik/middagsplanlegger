@@ -109,6 +109,7 @@ export function useMeals(currentUserId: string, weekOffset: number) {
   }
 
   async function addIngredientsToShoppingList(ings: MealIngredient[]) {
+    const annetId = categories.find((c) => c.name === 'Annet')?.id ?? ''
     for (const ing of ings) {
       const data: Record<string, unknown> = {
         name: ing.name,
@@ -116,7 +117,8 @@ export function useMeals(currentUserId: string, weekOffset: number) {
         checked: false,
       }
       if (currentUserId) data.added_by = currentUserId
-      if (ing.category) data.category = ing.category
+      const categoryId = ing.category || annetId
+      if (categoryId) data.category = categoryId
       await pb.collection('shopping_items').create(data, { requestKey: null })
     }
   }
